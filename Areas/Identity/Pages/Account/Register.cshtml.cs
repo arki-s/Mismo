@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -116,9 +117,12 @@ namespace Mismo.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
+            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
+            TempData["Department"] = loginUser.Department;
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -158,12 +162,15 @@ namespace Mismo.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return Redirect("/Home/Members");
+
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        //return LocalRedirect(returnUrl);
+                        return Redirect("/Home/Members");
                     }
                 }
                 foreach (var error in result.Errors)
@@ -173,6 +180,9 @@ namespace Mismo.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+    
+
+
             return Page();
         }
 

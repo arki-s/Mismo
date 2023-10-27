@@ -16,7 +16,17 @@
 <p>ユーザー一覧</p>
 @foreach (var item in Model)
 {
-<p>@item.Email</p> 
-<p>@item.LastName @item.FirstName</p>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>@item.Email</p>
+        <p>@item.LastName @item.FirstName</p>
+    }
+
+    else if (User.IsInRole("Manager"))
+    {
+
+        
+    }
+
 
 }
