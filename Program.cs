@@ -68,6 +68,8 @@ using (var scope = app.Services.CreateScope())
         user.UserName = email;
         user.Email = email;
         user.Department = "Admin";
+        user.FirstName = "Admin";
+        user.LastName = "Super";
 
         await userManager.CreateAsync(user, password);
 

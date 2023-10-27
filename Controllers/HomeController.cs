@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mismo.Data;
 using Mismo.Models;
+using Mismo.ViewModel;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 
@@ -9,11 +11,17 @@ namespace Mismo.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
+            _userManager = userManager;
+
+
         }
 
         public IActionResult Home()
@@ -26,10 +34,28 @@ namespace Mismo.Controllers
         }
 
         [Authorize(Roles = "Admin, Manager")]
-        public IActionResult Members()
+        public async Task<IActionResult> Members()
         {
+            var users = _userManager.Users.ToList();
 
-            return View();
+            foreach (var user in users) 
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(role)) {
+                    var usersRole = new Users()
+                    {
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Role = role
+                    };
+
+                }
+            }
+
+            return View(users);
         }
 
 

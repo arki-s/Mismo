@@ -1,5 +1,8 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity;
+@model IEnumerable<Mismo.Models.ApplicationUser>;
+
 @{
+    ViewData["Title"] = "Members";
 }
 <h1>メンバーリスト</h1>
 
@@ -7,3 +10,9 @@
 <p>Adminはマネージャー追加や新部門追加可能、Managerは同部門のメンバーのみ</p>
 
 <p>一括アップロードボタン作る予定（Admin限定）</p>
+
+@foreach (var item in Model)
+{
+<p>@item.Email</p>    
+
+}
