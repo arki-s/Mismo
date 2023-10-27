@@ -44,6 +44,7 @@ namespace Mismo.Controllers
                 if (!string.IsNullOrEmpty(role)) {
                     var usersRole = new Users()
                     {
+                        UserId = user.Id,
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
@@ -56,6 +57,26 @@ namespace Mismo.Controllers
 
             return View(users);
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Details(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+
+        }
+
 
 
 

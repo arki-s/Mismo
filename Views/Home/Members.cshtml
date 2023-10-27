@@ -20,6 +20,7 @@
     {
         <p>@item.Email</p>
         <p>@item.LastName @item.FirstName</p>
+        <a asp-action="Details" asp-route-id="@item.Id" class="text-center">Detail</a>
     }
 
     else if (User.IsInRole("Manager"))
