@@ -12,7 +12,7 @@ using Mismo.Data;
 namespace Mismo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231027021015_initial")]
+    [Migration("20231027044847_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

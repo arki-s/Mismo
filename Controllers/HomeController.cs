@@ -20,8 +20,6 @@ namespace Mismo.Controllers
         {
             _logger = logger;
             _userManager = userManager;
-
-
         }
 
         public IActionResult Home()
@@ -49,6 +47,7 @@ namespace Mismo.Controllers
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Department = user.Department,
                         Role = role
                     };
 

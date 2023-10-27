@@ -12,6 +12,8 @@ namespace Mismo.Data
         }
 
         public DbSet<Mismo.Models.OneOnOne> OneOnOne { get; set; } = default!;
+
+        public DbSet<Mismo.Models.ApplicationUser>? applicationUsers { get; set; }
         public DbSet<Mismo.Models.Goal>? Goal { get; set; }
         public DbSet<Mismo.Models.Message>? Message { get; set; }
         public DbSet<Mismo.Models.Mood>? Mood { get; set; }
