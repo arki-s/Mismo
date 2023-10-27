@@ -6,9 +6,16 @@
 }
 <h1>メンバーリスト</h1>
 
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertMessage"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
     <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Add New User</a>
 
-<p>Adminはマネージャー追加や新部門追加可能、Managerは同部門のメンバーのみ</p>
 
 <p>一括アップロードボタン作る予定（Admin限定）</p>
 
@@ -18,15 +25,25 @@
 {
     @if (User.IsInRole("Admin"))
     {
-        <p>@item.Email</p>
         <p>@item.LastName @item.FirstName</p>
+        <p>@item.Email</p>
+        <p>@item.Department</p>
         <a asp-action="Details" asp-route-id="@item.Id" class="text-center">Detail</a>
+        <p>---------------------</p>
     }
 
     else if (User.IsInRole("Manager"))
     {
+        if (TempData["Department"].Equals(item.Department))
+        {
+            <p>@item.LastName @item.FirstName</p>
+            <p>@item.Email</p>
+            <p>@item.Department</p>
+            <a asp-action="Details" asp-route-id="@item.Id" class="text-center">Detail</a>
+            <p>---------------------</p>
+            
+        }
 
-        
     }
 
 

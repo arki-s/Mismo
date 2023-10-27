@@ -9,6 +9,9 @@ namespace Mismo.Models
         public int MessageId { get; set; }
 
         [Required]
+        public DateTime Date { get; set; }
+
+        [Required]
         [Range(1, 3)]
         public int Priority { get; set; }
 

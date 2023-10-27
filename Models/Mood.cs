@@ -9,6 +9,10 @@ namespace Mismo.Models
         public int MoodId { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
+
+        [Required]
         [Range(1, 5)]
         public int Rating { get; set; }
 

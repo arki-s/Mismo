@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Mismo.Models.Mood>;
+@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+
+@{
+    var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+@foreach (var item in Model)
+{
+    @if (User.IsInRole("Admin"))
+    {
+        @item.Rating
+        @item.Comment
+    } else if (User.IsInRole("Manager"))
+    {
+        @* マネージャーが同じ部門のメンバーのMoodのみ閲覧できるようにする *@
+
+    } else
+    {
+        @if (item.UserId.Equals(loginUserId))
+        {
+            @item.Rating
+            @item.Comment
+        }
+    }
+
+   
+}

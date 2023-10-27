@@ -5,6 +5,7 @@ using Mismo.Data;
 using Mismo.Models;
 using Mismo.ViewModel;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Mismo.Controllers
@@ -54,6 +55,10 @@ namespace Mismo.Controllers
 
                 }
             }
+
+            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
+            TempData["Department"] = loginUser.Department;
 
             return View(users);
         }

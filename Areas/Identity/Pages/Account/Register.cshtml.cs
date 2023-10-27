@@ -163,6 +163,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        TempData["AlertMessage"] = "新しいユーザーを追加しました";
                         return Redirect("/Home/Members");
 
                     }
@@ -170,6 +171,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                     {
                         //await _signInManager.SignInAsync(user, isPersistent: false);
                         //return LocalRedirect(returnUrl);
+                        TempData["AlertMessage"] = "新しいユーザーを追加しました";
                         return Redirect("/Home/Members");
                     }
                 }
