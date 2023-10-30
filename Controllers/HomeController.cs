@@ -14,13 +14,15 @@ namespace Mismo.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Home()
@@ -80,6 +82,32 @@ namespace Mismo.Controllers
             }
             return View(user);
 
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            if (_userManager == null)
+            {
+                return Problem("Entity set 'UserManager'  is null.");
+            }
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user.Email.Equals("admin@admin.com")) {
+                TempData["AlertError"] = "管理者の削除はできません。";
+                return Redirect("/Home/Members");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+            }
+
+            TempData["AlertMessage"] = "ユーザーを削除しました。";
+            return Redirect("/Home/Members");
         }
 
 
