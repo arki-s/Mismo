@@ -31,6 +31,7 @@ namespace Mismo.Controllers
         }
         public IActionResult Index()
         {
+
             return View();
         }
 

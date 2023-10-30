@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mismo.Models
@@ -23,4 +24,5 @@ namespace Mismo.Models
         public string UserId { get; set; }
 
     }
+
 }

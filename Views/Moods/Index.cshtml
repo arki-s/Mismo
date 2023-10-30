@@ -1,29 +1,167 @@
-﻿@model IEnumerable<Mismo.Models.Mood>;
+﻿@model Mismo.ViewModel.UserMoods;
 @using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 
 @{
-    var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+}
+@if (TempData["AlertMood"] != null)
+{
+    <div class="alert alert-success alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertMood"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
-@foreach (var item in Model)
+<a asp-controller="Moods" asp-action="Create">今日の気分を追加</a>
+
+@* @foreach (var item in Model.MoodList)
 {
     @if (User.IsInRole("Admin"))
     {
-        @item.Rating
-        @item.Comment
-    } else if (User.IsInRole("Manager"))
-    {
-        @* マネージャーが同じ部門のメンバーのMoodのみ閲覧できるようにする *@
+        @item.Date
 
-    } else
-    {
-        @if (item.UserId.Equals(loginUserId))
+        @switch (@item.Rating)
         {
-            @item.Rating
-            @item.Comment
+            case 1:
+                <img class="select-icon" src="/images/bad.png" />
+                break;
+            case 2:
+                <img class="select-icon" src="/images/soso.png" />
+                break;
+            case 3:
+                <img class="select-icon" src="/images/fine.png" />
+                break;
+            case 4:
+                <img class="select-icon" src="/images/good.png" />
+                break;
+            case 5:
+                <img class="select-icon" src="/images/great.png" />
+                break;
         }
+
+        @item.Comment
+    }  *@
+
+@if (User.IsInRole("Member"))
+{
+    foreach (var item in Model.MoodList)
+    {
+        @if (item.UserId.Equals(Model.User.Id))
+        {
+            @item.Date
+
+            @switch (@item.Rating)
+            {
+                case 1:
+                    <img class="select-icon" src="/images/bad.png" />
+                    break;
+                case 2:
+                    <img class="select-icon" src="/images/soso.png" />
+                    break;
+                case 3:
+                    <img class="select-icon" src="/images/fine.png" />
+                    break;
+                case 4:
+                    <img class="select-icon" src="/images/good.png" />
+                    break;
+                case 5:
+                    <img class="select-icon" src="/images/great.png" />
+                    break;
+            }
+            @item.Comment
+             }
+}
+}
+
+@if (User.IsInRole("Admin"))
+{
+    @foreach (var user in Model.Users)
+    {
+        foreach (var item in Model.MoodList)
+        {
+            @if (item.UserId.Equals(user))
+            {
+                @user.LastName
+
+                @user.FirstName
+
+                @item.Date
+
+                @switch (@item.Rating)
+                {
+                    case 1:
+                        <img class="select-icon" src="/images/bad.png" />
+                        break;
+                    case 2:
+                        <img class="select-icon" src="/images/soso.png" />
+                        break;
+                    case 3:
+                        <img class="select-icon" src="/images/fine.png" />
+                        break;
+                    case 4:
+                        <img class="select-icon" src="/images/good.png" />
+                        break;
+                    case 5:
+                        <img class="select-icon" src="/images/great.png" />
+                        break;
+                }
+
+                @item.Comment
+            }
+
+        }
+
+
+
+
+    }       }
+else if (User.IsInRole("Manager"))
+{
+    @foreach (var user in Model.Users)
+    {
+        @if (user.Department.Equals(Model.User.Department))
+        {
+            foreach (var item in Model.MoodList)
+            {
+                @if (item.UserId.Equals(user))
+                {
+                    @user.LastName
+
+                    @user.FirstName
+
+                    @item.Date
+
+                    @switch (@item.Rating)
+                    {
+                        case 1:
+                            <img class="select-icon" src="/images/bad.png" />
+                            break;
+                        case 2:
+                            <img class="select-icon" src="/images/soso.png" />
+                            break;
+                        case 3:
+                            <img class="select-icon" src="/images/fine.png" />
+                            break;
+                        case 4:
+                            <img class="select-icon" src="/images/good.png" />
+                            break;
+                        case 5:
+                            <img class="select-icon" src="/images/great.png" />
+                            break;
+                    }
+
+                    @item.Comment
+                }
+
+            }
+
+
+        }
+
     }
 
-   
 }
+    @* マネージャーが同じ部門のメンバーのMoodのみ閲覧できるようにする *@
+    @* Viewmodel作成必要かも *@
+
