@@ -66,10 +66,6 @@ namespace Mismo.Controllers
 
             return View(usermoods);
 
-            //return _context.Mood != null ?
-            //             View(await _context.Mood.ToListAsync()) :
-            //             Problem("Entity set 'ApplicationDbContext.Mood'  is null.");
-
         }
 
 
@@ -179,6 +175,28 @@ namespace Mismo.Controllers
             }
             return View(mood);
         }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Mood == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Mood'  is null.");
+            }
+            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var mood = await _context.Mood.FindAsync(id);
+            if (mood != null && mood.UserId.Equals(loginUserId))
+            {
+                _context.Mood.Remove(mood);
+                TempData["AlertMood"] = "気分を削除しました。";
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
 
         private bool MoodExists(int moodId)
         {

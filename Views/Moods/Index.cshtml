@@ -52,7 +52,12 @@
            <p>@item.Comment</p>
 
            <a asp-controller="Moods" asp-action="Edit" asp-route-id="@item.MoodId">編集</a>
-            
+
+            <form asp-controller="Moods" asp-action="Delete" onSubmit="return check()">
+                <input type="hidden" name="id" value="@item.MoodId" />
+                <input type="submit" value="削除" class="btn btn-warning" />
+            </form>
+
         }
     }
 }
@@ -135,3 +140,13 @@ else if (User.IsInRole("Manager"))
 
 }
 
+<script>
+    function check() {
+        if (window.confirm('この気分を削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>
