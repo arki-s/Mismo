@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Mismo.Data;
 using Mismo.Models;
@@ -106,6 +107,82 @@ namespace Mismo.Controllers
             return View(mood);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Edit(int? id) {
 
+            if (id == null || _context.Mood == null)
+            {
+                return NotFound();
+            }
+
+            var mood = await _context.Mood.FindAsync(id);
+            if (mood == null)
+            {
+                return NotFound();
+            }
+
+            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (mood.UserId != loginUserId)
+            {
+                TempData["AlertMoodError"] = "アクセス権がありません。";
+                return Redirect("/Moods/Index");
+            }
+ 
+            if (!(mood.UserId.Equals(loginUserId)))
+            {
+                TempData["AlertMoodError"] = "アクセス権がありません。";
+                return Redirect("/Moods/Index");
+            }
+
+            return View(mood);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, string[]values)
+        {
+            Mood mood = new Mood();
+            mood.MoodId = id;
+            mood.Date = DateTime.Parse(values[0]);
+            mood.Rating = int.Parse(values[1]);
+            mood.Comment = values[2];
+            mood.UserId = values[3];
+
+            if (id != mood.MoodId)
+            {
+                return NotFound();
+            }
+
+            ModelState.Remove("User");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(mood);
+                    await _context.SaveChangesAsync();
+                    TempData["AlertMood"] = "気分を編集しました。";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MoodExists(mood.MoodId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(mood);
+        }
+
+        private bool MoodExists(int moodId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

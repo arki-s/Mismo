@@ -12,6 +12,13 @@
         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+@if (TempData["AlertMoodError"] != null)
+{
+    <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertError"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <a asp-controller="Moods" asp-action="Create">今日の気分を追加</a>
 
@@ -21,7 +28,8 @@
     {
         @if (item.UserId.Equals(Model.User.Id))
         {
-            @item.Date
+            <p>@item.Date</p>
+            
 
             @switch (@item.Rating)
             {
@@ -41,7 +49,10 @@
                     <img class="select-icon" src="/images/great.png" />
                     break;
             }
-            @item.Comment
+           <p>@item.Comment</p>
+
+           <a asp-controller="Moods" asp-action="Edit" asp-route-id="@item.MoodId">編集</a>
+            
         }
     }
 }
@@ -53,13 +64,10 @@
     {
         @foreach (var item in peruser.Moods)
         {
-
-            @peruser.LastName
-
-            @peruser.FirstName
-
-            @item.Date
-
+            <p>@peruser.LastName</p>
+            <p>@peruser.FirstName</p>
+            <p>@item.Date</p>
+            
             @switch (@item.Rating)
             {
                 case 1:
@@ -79,7 +87,8 @@
                     break;
             }
 
-            @item.Comment
+            <p>@item.Comment</p>
+           
         }
 
     }
@@ -90,14 +99,12 @@ else if (User.IsInRole("Manager"))
     {
         @if (peruser.Department.Equals(Model.User.Department))
         {
-
-            @peruser.LastName
-
-            @peruser.FirstName
+            <p>@peruser.LastName</p>
+            <p>@peruser.FirstName</p>
 
             @foreach (var item in peruser.Moods)
             {
-                @item.Date
+                <p>@item.Date</p>
 
                 @switch (@item.Rating)
                 {
@@ -118,7 +125,7 @@ else if (User.IsInRole("Manager"))
                         break;
                 }
 
-                @item.Comment
+                <p>@item.Comment</p>
             }
 
         }

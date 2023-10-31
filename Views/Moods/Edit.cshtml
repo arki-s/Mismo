@@ -1,3 +1,39 @@
-﻿
+﻿@model Mismo.Models.Mood;
+@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+
 @{
+    var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
 }
+
+<h1>気分編集</h1>
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="MoodId" />
+    <div class="form-group p-1">
+        <label name="Date" class="control-label">日時</label>
+        <input asp-for="Date" class="form-control" name="values" type="datetime"/>
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="Rating" class="control-label">レーティング</label>
+        <input asp-for="Rating" name="values" type="radio" value="1" /> <img class="select-icon" src="/images/bad.png" />
+        <input asp-for="Rating" name="values" type="radio" value="2" /> <img class="select-icon" src="/images/soso.png" />
+        <input asp-for="Rating" name="values" type="radio" value="3" checked /> <img class="select-icon" src="/images/fine.png">
+        <input asp-for="Rating" name="values" type="radio" value="4" /> <img class="select-icon" src="/images/good.png" />
+        <input asp-for="Rating" name="values" type="radio" value="5" /> <img class="select-icon" src="/images/great.png" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="Comment" class="control-label">コメント</label>
+        <input asp-for="Comment" class="form-control" name="values"/>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <input asp-for="UserId" class="form-control" name="values" type="hidden" values="@loginUserId"/>
+    <div class="form-group p-1">
+        <input type="submit" value="保存" class="btn btn-warning" />
+    </div>
+</form>
+
