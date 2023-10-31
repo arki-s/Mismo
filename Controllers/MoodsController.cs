@@ -49,6 +49,7 @@ namespace Mismo.Controllers
                     Department = mooduser.Department,
                     FirstName = mooduser.FirstName,
                     LastName = mooduser.LastName,
+                    Moods = mooduser.Moods,
                 });
             }
 

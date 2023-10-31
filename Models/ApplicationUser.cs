@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Mismo.Models
 {
@@ -16,5 +17,8 @@ namespace Mismo.Models
         public virtual ICollection<OneOnOne> OneOnOnes { get; set; }
         public virtual ICollection<Goal> Goals { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
+
+        
+
     }
 }
