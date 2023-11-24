@@ -196,8 +196,6 @@ namespace Mismo.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         private bool MoodExists(int moodId)
         {
             throw new NotImplementedException();

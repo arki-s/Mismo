@@ -138,6 +138,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Department = Input.Department;
+                user.Role = Input.Role;
 
                 await _userManager.AddToRoleAsync(user, Input.Role);
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -164,7 +165,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                     {
                         //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                         TempData["AlertMessage"] = "新しいユーザーを追加しました";
-                        return Redirect("/Home/Members");
+                        return Redirect("/Home/Users");
 
                     }
                     else
@@ -172,7 +173,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                         //await _signInManager.SignInAsync(user, isPersistent: false);
                         //return LocalRedirect(returnUrl);
                         TempData["AlertMessage"] = "新しいユーザーを追加しました";
-                        return Redirect("/Home/Members");
+                        return Redirect("/Home/Users");
                     }
                 }
                 foreach (var error in result.Errors)

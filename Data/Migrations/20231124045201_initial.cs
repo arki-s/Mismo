@@ -36,6 +36,13 @@ namespace Mismo.Data.Migrations
                 nullable: false,
                 defaultValue: "");
 
+            migrationBuilder.AddColumn<string>(
+                name: "Role",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "Goal",
                 columns: table => new
@@ -176,6 +183,10 @@ namespace Mismo.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "LastName",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "Role",
                 table: "AspNetUsers");
         }
     }

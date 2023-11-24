@@ -35,33 +35,14 @@ namespace Mismo.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin, Manager")]
-        public async Task<IActionResult> Members()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Users()
         {
             var users = _userManager.Users.ToList();
-
-            foreach (var user in users) 
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault();
-
-                if (!string.IsNullOrEmpty(role)) {
-                    var usersRole = new Users()
-                    {
-                        UserId = user.Id,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Department = user.Department,
-                        Role = role
-                    };
-
-                }
-            }
-
-            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
-            TempData["Department"] = loginUser.Department;
+          
+            //var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
+            //TempData["Department"] = loginUser.Department;
 
             return View(users);
         }
@@ -97,7 +78,7 @@ namespace Mismo.Controllers
 
             if (user.Email.Equals("admin@admin.com")) {
                 TempData["AlertError"] = "管理者の削除はできません。";
-                return Redirect("/Home/Members");
+                return Redirect("/Home/Users");
             }
 
             var result = await _userManager.DeleteAsync(user);
@@ -108,7 +89,7 @@ namespace Mismo.Controllers
             }
 
             TempData["AlertMessage"] = "ユーザーを削除しました。";
-            return Redirect("/Home/Members");
+            return Redirect("/Home/Users");
         }
 
 

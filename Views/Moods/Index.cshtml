@@ -15,7 +15,7 @@
 @if (TempData["AlertMoodError"] != null)
 {
     <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
-        @TempData["AlertError"]
+        @TempData["AlertMoodError"]
         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -69,8 +69,7 @@
     {
         @foreach (var item in peruser.Moods)
         {
-            <p>@peruser.LastName</p>
-            <p>@peruser.FirstName</p>
+            <p>@peruser.LastName @peruser.FirstName</p>
             <p>@item.Date</p>
             
             @switch (@item.Rating)
@@ -104,8 +103,7 @@ else if (User.IsInRole("Manager"))
     {
         @if (peruser.Department.Equals(Model.User.Department))
         {
-            <p>@peruser.LastName</p>
-            <p>@peruser.FirstName</p>
+            <p>@peruser.LastName @peruser.FirstName</p>
 
             @foreach (var item in peruser.Moods)
             {

@@ -1,0 +1,82 @@
+﻿@model Mismo.ViewModel.UserGoals;
+@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+
+@{
+}
+
+@if (TempData["AlertGoal"] != null)
+{
+    <div class="alert alert-success alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertGoal"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["AlertGoalError"] != null)
+{
+    <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertGoalError"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (User.IsInRole("Manager"))
+{
+    <a asp-controller="Goals" asp-action="Create">目標を追加</a>
+}
+
+@if (User.IsInRole("Member"))
+{
+    foreach (var item in Model.GoalList)
+    {
+        @if (item.UserId.Equals(Model.User.Id))
+        {
+            <p>@item.Name</p>
+            <p>開始日：@item.StartDate</p>
+            <p>目標達成日：@item.EndDate</p>
+            <p>@item.Achievement</p>
+            <p>@item.Description</p>
+
+        }
+    }
+}
+
+@* @if (User.IsInRole("Manager"))
+{
+    @foreach (var peruser in Model.Users)
+    {
+        @if (peruser.Department.Equals(Model.User.Department))
+        {
+            <p>@peruser.LastName</p>
+            <p>@peruser.FirstName</p>
+
+            @foreach (var item in peruser.Goals)
+            {
+                <p>@peruser.LastName @peruser.FirstName</p>
+                <p>@item.Name</p>
+                <p>開始日：@item.StartDate</p>
+                <p>目標達成日：@item.EndDate</p>
+                <p>@item.Achievement</p>
+                <p>@item.Description</p>
+
+                <a asp-controller="Goals" asp-action="Edit" asp-route-id="@item.GoalId">編集</a>
+
+                <form asp-controller="Goals" asp-action="Delete" onSubmit="return check()">
+                    <input type="hidden" name="id" value="@item.GoalId" />
+                    <input type="submit" value="削除" class="btn btn-warning" />
+                </form>
+            }
+        }
+    }
+} *@
+
+<script>
+    function check() {
+        if (window.confirm('この目標を削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>
