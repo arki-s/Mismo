@@ -1,0 +1,41 @@
+﻿@model Mismo.ViewModel.UserCreate;
+@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>目標を登録しましょう！</h1>
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group p-1">
+        <label name="Name" class="control-label">目標</label>
+        <input asp-for="Goal.Name" class="form-control" name="values" />
+        <span asp-validation-for="Goal.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="StartDate" class="control-label">目標設定日</label>
+        <input asp-for="Goal.StartDate" class="form-control" name="values" type="datetime" />
+        <span asp-validation-for="Goal.StartDate" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="EndDate" class="control-label">目標達成日</label>
+        <input asp-for="Goal.EndDate" class="form-control" name="values" type="datetime" />
+        <span asp-validation-for="Goal.EndDate" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="Description" class="control-label">詳細</label>
+        <input asp-for="Goal.Description" class="form-control" name="values" />
+        <span asp-validation-for="Goal.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group p-1">
+        <label name="User" class="control-label">対象者</label>
+    <select asp-for="Goal.UserId" class="form-control" name="values" asp-items="ViewBag.Members">
+    <option>選択してください</option>
+    </select>
+    </div>
+    <div class="form-group p-1">
+        <input type="submit" value="保存" class="btn btn-warning" />
+    </div>
+</form>
