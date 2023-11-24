@@ -49,7 +49,6 @@ namespace Mismo.Controllers
                 {
                     Email = goaluser.Email,
                     UserName = goaluser.UserName,
-                    Department = goaluser.Department,
                     FirstName = goaluser.FirstName,
                     LastName = goaluser.LastName,
                     Goals = goaluser.Goals,
@@ -83,7 +82,6 @@ namespace Mismo.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Department = user.Department,
             };
 
             var users = _userManager.Users.ToList();
@@ -99,7 +97,6 @@ namespace Mismo.Controllers
                         FirstName = u.FirstName,
                         LastName = u.LastName,
                         Email = u.Email,
-                        Department = u.Department
                     }
                     );
             }
@@ -111,15 +108,15 @@ namespace Mismo.Controllers
                 Goal = new Goal()
             };
 
-            var userss = usersCreate.Where(u => u.Department.Equals(createUser.Department));
+            //var userss = usersCreate.Where(u => u.Department.Equals(createUser.Department));
 
-            var members = userss.Select(user => new SelectListItem
-            {
-                Value = user.Id,
-                Text = $"{user.LastName} {user.FirstName}"
-            });
+            //var members = userss.Select(user => new SelectListItem
+            //{
+            //    Value = user.Id,
+            //    Text = $"{user.LastName} {user.FirstName}"
+            //});
 
-            ViewBag.Members = new SelectList(members, "Value", "Text");
+            //ViewBag.Members = new SelectList(members, "Value", "Text");
             return View(userCreate);
         }
 

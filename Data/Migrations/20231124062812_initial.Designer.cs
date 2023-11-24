@@ -12,7 +12,7 @@ using Mismo.Data;
 namespace Mismo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231124045201_initial")]
+    [Migration("20231124062812_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,9 +173,8 @@ namespace Mismo.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -234,6 +233,8 @@ namespace Mismo.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -243,6 +244,23 @@ namespace Mismo.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Mismo.Models.Department", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DepartmentId");
+
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("Mismo.Models.Goal", b =>
@@ -421,6 +439,15 @@ namespace Mismo.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Mismo.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Mismo.Models.Department", "Department")
+                        .WithMany("Users")
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("Mismo.Models.Goal", b =>
                 {
                     b.HasOne("Mismo.Models.ApplicationUser", "User")
@@ -474,6 +501,11 @@ namespace Mismo.Data.Migrations
                     b.Navigation("Moods");
 
                     b.Navigation("OneOnOnes");
+                });
+
+            modelBuilder.Entity("Mismo.Models.Department", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

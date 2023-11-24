@@ -47,7 +47,6 @@ namespace Mismo.Controllers
                 {
                     Email = mooduser.Email,
                     UserName = mooduser.UserName,
-                    Department = mooduser.Department,
                     FirstName = mooduser.FirstName,
                     LastName = mooduser.LastName,
                     Moods = mooduser.Moods,

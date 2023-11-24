@@ -9,12 +9,11 @@ namespace Mismo.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Department",
+            migrationBuilder.AddColumn<int>(
+                name: "DepartmentId",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                type: "int",
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "FirstName",
@@ -42,6 +41,19 @@ namespace Mismo.Data.Migrations
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.CreateTable(
+                name: "Department",
+                columns: table => new
+                {
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Department", x => x.DepartmentId);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Goal",
@@ -135,6 +147,11 @@ namespace Mismo.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_DepartmentId",
+                table: "AspNetUsers",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Goal_UserId",
                 table: "Goal",
                 column: "UserId");
@@ -153,10 +170,24 @@ namespace Mismo.Data.Migrations
                 name: "IX_OneOnOne_UserId",
                 table: "OneOnOne",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Department_DepartmentId",
+                table: "AspNetUsers",
+                column: "DepartmentId",
+                principalTable: "Department",
+                principalColumn: "DepartmentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Department_DepartmentId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Department");
+
             migrationBuilder.DropTable(
                 name: "Goal");
 
@@ -169,8 +200,12 @@ namespace Mismo.Data.Migrations
             migrationBuilder.DropTable(
                 name: "OneOnOne");
 
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_DepartmentId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropColumn(
-                name: "Department",
+                name: "DepartmentId",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

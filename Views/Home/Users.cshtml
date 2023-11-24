@@ -21,7 +21,7 @@
         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-
+<a asp-controller="Departments" asp-action="Index" class="btn btn-primary">部門管理</a>
     <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Add New User</a>
 
 
@@ -35,7 +35,6 @@
         <p>@user.LastName @user.FirstName</p>
         <p>@user.Email</p>
         <p>@user.Role</p>
-        <p>@user.Department</p>
         <a asp-action="Details" asp-route-id="@user.Id" class="text-center">Detail</a>
         <form asp-action="Delete" onSubmit="return check()">
             <input type="hidden" name="id" value="@user.Id" />

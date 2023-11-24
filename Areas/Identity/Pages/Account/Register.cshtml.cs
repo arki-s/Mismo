@@ -91,9 +91,6 @@ namespace Mismo.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            public string Department { get; set; }
-
-            [Required]
             public string Role {  get; set; }
 
 
@@ -121,7 +118,7 @@ namespace Mismo.Areas.Identity.Pages.Account
         {
             var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
-            TempData["Department"] = loginUser.Department;
+            //TempData["Department"] = loginUser.Department;
 
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -137,7 +134,6 @@ namespace Mismo.Areas.Identity.Pages.Account
 
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.Department = Input.Department;
                 user.Role = Input.Role;
 
                 await _userManager.AddToRoleAsync(user, Input.Role);

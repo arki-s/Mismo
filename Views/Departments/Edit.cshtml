@@ -1,5 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Mismo.Models.Department;
+
 @{
 }
+
+@if (TempData["AlertDepartmentError"] != null)
+{
+    <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertDepartmentError"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<h1 class="text-center">部門編集</h1>
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="DepartmentId" />
+
+        <label class="control-label">部門名</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <input type="submit" value="保存" class="w-100 btn btn-lg btn-primary" />
+
+</form>
+<a asp-action="Index">部門一覧に戻る</a>

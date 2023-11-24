@@ -10,18 +10,8 @@ namespace Mismo.Models
         [Required]
         public string Name { get; set; }
 
-        public ICollection<UserDepartment> UserDepartments { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
     }
 
-    public class UserDepartment
-    {
-        public int DepartmentID { get; set; }
-
-        public Department Department { get; set; }
-
-        [ForeignKey("UserId")]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
-    }
+    
 }

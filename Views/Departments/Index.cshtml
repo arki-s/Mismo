@@ -1,5 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Mismo.Models.Department>;
+
 @{
 }
+@if (TempData["AlertDepartment"] != null)
+{
+    <div class="alert alert-success alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertDepartment"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<a class="btn btn-primary" asp-action="Create">部門作成</a>
+
+@if (Model != null)
+{
+    @foreach (var dp in Model)
+    {
+        <p>@dp.Name</p>
+
+        <a class="btn btn-primary" asp-action="Details">参加者一覧</a>
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@dp.DepartmentId">編集</a>
+        <form asp-controller="Departments" asp-action="Delete" onSubmit="return check()">
+            <input type="hidden" name="id" value="@dp.DepartmentId" />
+            <input type="submit" value="削除" class="btn btn-danger" />
+        </form>
+    
+    }
+
+
+}
+
+<script>
+    function check() {
+        if (window.confirm('この部門を削除しますか？')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+</script>
