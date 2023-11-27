@@ -1,0 +1,38 @@
+﻿@model Mismo.ViewModel.DepDetails;
+
+@{
+}
+
+@if (Model.Department != null)
+{
+    <h1>部門名：@Model.Department.Name</h1>
+
+    <h3>マネージャー</h3>
+    @if (Model.Managers.Count() > 0)
+    {
+        @foreach (var mgr in Model.Managers)
+        {
+            <p>@mgr.LastName @mgr.FirstName</p>
+
+        }
+    }
+
+    <h3>メンバー</h3>
+    @if (Model.Members.Count() > 0)
+    {
+        @foreach (var mem in Model.Members)
+        {
+            <p>@mem.LastName @mem.FirstName</p>
+        }
+    }
+    else
+    {
+        <p>所属メンバーはいません。</p>
+    }
+
+}
+else
+{
+    <h1>所属部門の登録がありません。Adminユーザーに設定を依頼してください。</h1>
+}
+

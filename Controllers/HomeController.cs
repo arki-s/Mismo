@@ -50,6 +50,23 @@ namespace Mismo.Controllers
             return View(users);
         }
 
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> MgrIndex()
+        {
+            var loginManagerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser loginManager = await _userManager.FindByIdAsync(loginManagerId);
+
+            DepDetails depDetails = new DepDetails();
+            depDetails.Managers = new List<ApplicationUser>();
+            depDetails.Members = new List<ApplicationUser>();
+
+            depDetails.Department = await _context.Department.FindAsync(loginManager.DepartmentId);
+            depDetails.Managers = _userManager.Users.Where(x => x.Role.Equals("Manager") && x.DepartmentId == loginManager.DepartmentId).ToList();
+            depDetails.Members = _userManager.Users.Where(x => x.Role.Equals("Member") && x.DepartmentId == loginManager.DepartmentId).ToList();
+
+            return View(depDetails);
+        }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
@@ -130,9 +147,28 @@ namespace Mismo.Controllers
         }
 
 
+        [Authorize(Roles = "Member")]
+        [HttpGet]
+        public async Task<IActionResult> MemMain(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+
+        }
+
         [Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> MgrMain(string? id)
         {
             if (id == null)
             {
