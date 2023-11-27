@@ -7,6 +7,14 @@
     ViewData["Title"] = "Home Page";
 }
 
+@if (TempData["AlerError"] != null)
+{
+    <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
+        @TempData["AlertError"]
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>全ユーザー用ページ</p>
@@ -19,7 +27,10 @@
 else if (User.IsInRole("Manager"))
 {
     <h1>Hi Manager</h1>
-} else
+} else if (User.IsInRole("Member"))
 {    
-<h1>Hi Member</h1>
+    <h1>Hi Member</h1>
+}else
+{
+<h1>ログインしてください</h1>    
 }

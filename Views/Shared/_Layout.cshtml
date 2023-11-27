@@ -50,7 +50,10 @@
 
                         } else if (User.IsInRole("Member")){
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MemMain">Main Page</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MemMain" asp-route-id="@loginUserId">Main Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Moods" asp-action="Index" asp-route-id="@loginUserId">Mood List</a>
                             </li>
                         }
 

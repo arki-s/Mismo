@@ -81,7 +81,7 @@ namespace Mismo.Controllers
                 return NotFound();
             }
 
-            ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
+            ViewBag.Departments = new SelectList(_context.Department, "DepartmentId", "Name");
 
             return View(user);
         }
@@ -168,20 +168,20 @@ namespace Mismo.Controllers
 
         [Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<IActionResult> MgrMain(string? id)
+        public async Task<IActionResult> MgrMain()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var user = await _userManager.FindByIdAsync(id);
+            //var user = await _userManager.FindByIdAsync(id);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
+            //if (user == null)
+            //{
+            //    return NotFound();
+            //}
+            return View();
 
         }
 

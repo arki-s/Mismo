@@ -20,11 +20,12 @@
     </div>
 }
 
-<a asp-controller="Moods" asp-action="Create">今日の気分を追加</a>
-
 @if (User.IsInRole("Member"))
 {
-    foreach (var item in Model.MoodList)
+    <a asp-controller="Moods" asp-action="Create">今日の気分を追加</a>
+}
+
+    @foreach (var item in Model.MoodList)
     {
         @if (item.UserId.Equals(Model.User.Id))
         {
@@ -51,52 +52,21 @@
             }
            <p>@item.Comment</p>
 
-           <a asp-controller="Moods" asp-action="Edit" asp-route-id="@item.MoodId">編集</a>
+        @if (User.IsInRole("Member"))
+        {
+            <a asp-controller="Moods" asp-action="Edit" asp-route-id="@item.MoodId">編集</a>
 
             <form asp-controller="Moods" asp-action="Delete" onSubmit="return check()">
                 <input type="hidden" name="id" value="@item.MoodId" />
                 <input type="submit" value="削除" class="btn btn-warning" />
             </form>
+        }
+        
 
         }
     }
-}
 
-@if (User.IsInRole("Admin"))
-{
 
-    @foreach (var peruser in Model.Users)
-    {
-        @foreach (var item in peruser.Moods)
-        {
-            <p>@peruser.LastName @peruser.FirstName</p>
-            <p>@item.Date</p>
-            
-            @switch (@item.Rating)
-            {
-                case 1:
-                    <img class="select-icon" src="/images/bad.png" />
-                    break;
-                case 2:
-                    <img class="select-icon" src="/images/soso.png" />
-                    break;
-                case 3:
-                    <img class="select-icon" src="/images/fine.png" />
-                    break;
-                case 4:
-                    <img class="select-icon" src="/images/good.png" />
-                    break;
-                case 5:
-                    <img class="select-icon" src="/images/great.png" />
-                    break;
-            }
-
-            <p>@item.Comment</p>
-           
-        }
-
-    }
-}
 @* else if (User.IsInRole("Manager"))
 {
     @foreach (var peruser in Model.Users)

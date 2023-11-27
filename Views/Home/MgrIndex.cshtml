@@ -23,6 +23,7 @@
         @foreach (var mem in Model.Members)
         {
             <p>@mem.LastName @mem.FirstName</p>
+            <a asp-area="" asp-controller="Moods" asp-action="Index" asp-route-id="@mem.Id">Mood List</a>
         }
     }
     else

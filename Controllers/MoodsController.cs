@@ -21,49 +21,32 @@ namespace Mismo.Controllers
             _userManager = userManager;
         }
 
-        [Authorize]
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Member, Manager")]
+        public async Task<IActionResult> Index(string? id)
         {
             if (_context.Mood == null) {
                 Problem("Entity set 'ApplicationDbContext.Mood'  is null.");
             }
 
-            var moodList = new List<Mood>();
-            var users = new List<ApplicationUser>();
-
-            foreach (var item in _context.Mood)
+            if (id == null)
             {
-                moodList.Add(new Mood
-                {
-                    MoodId = item.MoodId,
-                    Date = item.Date,
-                    Rating = item.Rating,
-                    Comment = item.Comment,
-                    UserId = item.UserId
-                });
-
-                var mooduser = await _userManager.FindByIdAsync(item.UserId);
-                users.Add(new ApplicationUser
-                {
-                    Email = mooduser.Email,
-                    UserName = mooduser.UserName,
-                    FirstName = mooduser.FirstName,
-                    LastName = mooduser.LastName,
-                    Moods = mooduser.Moods,
-                });
+                return NotFound();
             }
 
-            var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(loginUserId);
+            var user = await _userManager.FindByIdAsync(id);
 
-            var usermoods = new UserMoods()
+            if (user == null)
             {
-                User = user,
-                MoodList = moodList,
-                Users = users,
-            };
+                return NotFound();
+            }
 
-            return View(usermoods);
+            UserMoods userMoods = new UserMoods();
+            userMoods.User = user;
+            userMoods.MoodList = new List<Mood>();
+
+            userMoods.MoodList = _context.Mood.Where(x => x.UserId.Equals(id)).ToList();
+
+            return View(userMoods);
 
         }
 
@@ -96,13 +79,13 @@ namespace Mismo.Controllers
                 _context.Add(mood);
                 await _context.SaveChangesAsync();
                 TempData["AlertMood"] = "新しい今の気分を登録しました。";
-                return Redirect("/Moods/Index");
+                return Redirect($"/Moods/Index/{values[2]}");
             }
 
             return View(mood);
         }
 
-        [Authorize]
+        [Authorize(Roles ="Member")]
         public async Task<IActionResult> Edit(int? id) {
 
             if (id == null || _context.Mood == null)
@@ -117,17 +100,11 @@ namespace Mismo.Controllers
             }
 
             var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (mood.UserId != loginUserId)
-            {
-                TempData["AlertMoodError"] = "アクセス権がありません。";
-                return Redirect("/Moods/Index");
-            }
  
             if (!(mood.UserId.Equals(loginUserId)))
             {
-                TempData["AlertMoodError"] = "アクセス権がありません。";
-                return Redirect("/Moods/Index");
+                TempData["AlertError"] = "アクセス権がありません。";
+                return Redirect("/");
             }
 
             return View(mood);
@@ -170,7 +147,7 @@ namespace Mismo.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Moods/Index/{values[3]}");
             }
             return View(mood);
         }
@@ -192,7 +169,8 @@ namespace Mismo.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Redirect($"/Moods/Index/{loginUserId}");
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool MoodExists(int moodId)
