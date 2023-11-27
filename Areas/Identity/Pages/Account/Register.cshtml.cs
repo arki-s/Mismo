@@ -17,8 +17,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Mismo.Data;
 using Mismo.Models;
 
 namespace Mismo.Areas.Identity.Pages.Account
@@ -32,6 +35,7 @@ namespace Mismo.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -39,7 +43,8 @@ namespace Mismo.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -48,6 +53,7 @@ namespace Mismo.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -118,13 +124,12 @@ namespace Mismo.Areas.Identity.Pages.Account
         {
             var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
-            //TempData["Department"] = loginUser.Department;
-
+            ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(int depSelect, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -135,6 +140,7 @@ namespace Mismo.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Role = Input.Role;
+                user.DepartmentId = depSelect;
 
                 await _userManager.AddToRoleAsync(user, Input.Role);
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -179,9 +185,9 @@ namespace Mismo.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-    
 
 
+            ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
             return Page();
         }
 

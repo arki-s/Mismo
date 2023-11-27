@@ -1,23 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@model IEnumerable<Mismo.Models.ApplicationUser>;
+@model Mismo.ViewModel.Users;
 
 @{
     ViewData["Title"] = "Users";
 }
 <h1>ユーザーリスト</h1>
 
-@if (TempData["AlertMessage"] != null)
+@if (TempData["AlertUser"] != null)
 {
     <div class="alert alert-success alert-dismissable fade show m-1" role="alert">
-        @TempData["AlertMessage"]
+        @TempData["AlertUser"]
         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-@if (TempData["AlertError"] != null)
+@if (TempData["AlertUserError"] != null)
 {
     <div class="alert alert-danger alert-dismissable fade show m-1" role="alert">
-        @TempData["AlertError"]
+        @TempData["AlertUserError"]
         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -29,13 +29,26 @@
 
 
 <p>ユーザー一覧</p>
-@foreach (var user in Model)
-{
-    
+@foreach (var user in Model.AllUsers)
+{  
         <p>@user.LastName @user.FirstName</p>
         <p>@user.Email</p>
-        <p>@user.Role</p>
-        <a asp-action="Details" asp-route-id="@user.Id" class="text-center">Detail</a>
+    <p>@user.Role</p>
+
+    @if (Model.Departments.Count() > 0)
+    {
+        @foreach (var dep in Model.Departments)
+        {
+            @if (dep.DepartmentId == user.DepartmentId)
+            {
+                <p>@dep.Name</p>
+            }
+        }
+
+    }
+    
+
+    <a asp-action="Edit" asp-route-id="@user.Id" class="text-center">Edit</a>
         <form asp-action="Delete" onSubmit="return check()">
             <input type="hidden" name="id" value="@user.Id" />
             <input type="submit" value="削除" class="btn btn-danger" />

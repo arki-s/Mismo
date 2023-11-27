@@ -1,5 +1,27 @@
-﻿
+﻿@model Mismo.ViewModel.DepDetails;
+
 @{
 }
 
-<p>参加者一覧表示のためのページ</p>
+<h1>部門名：@Model.Department.Name</h1>
+
+<h3>Managers</h3>
+@if (Model.Managers.Count() > 0)
+{
+    foreach (var mgr in Model.Managers)
+    {
+        <p>@mgr.LastName @mgr.FirstName</p>
+    }
+
+}
+
+<h3>Members</h3>
+
+@if (Model.Members.Count() > 0)
+{
+    foreach (var mem in Model.Members)
+    {
+        <p>@mem.LastName @mem.FirstName</p>
+    }
+
+}

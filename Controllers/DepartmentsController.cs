@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mismo.Data;
 using Mismo.Models;
+using Mismo.ViewModel;
 using System.Security.Claims;
 
 namespace Mismo.Controllers
@@ -120,6 +121,20 @@ namespace Mismo.Controllers
             return View(department);
         }
 
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            DepDetails depDetails = new DepDetails();
+            depDetails.Managers = new List<ApplicationUser>();
+            depDetails.Members = new List<ApplicationUser>();
+
+            depDetails.Department = await _context.Department.FindAsync(id);
+            depDetails.Managers = _userManager.Users.Where(x => x.Role.Equals("Manager") && x.DepartmentId == id).ToList();
+            depDetails.Members = _userManager.Users.Where(x => x.Role.Equals("Member") && x.DepartmentId == id).ToList();
+
+            return View(depDetails);
+        }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

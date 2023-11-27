@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Mismo.Data;
 using Mismo.Models;
 using Mismo.ViewModel;
@@ -18,18 +19,19 @@ namespace Mismo.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         public IActionResult Home()
         {
             return View();
         }
-        public IActionResult Index()
+        public IActionResult Landing()
         {
 
             return View();
@@ -38,16 +40,97 @@ namespace Mismo.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Users()
         {
-            var users = _userManager.Users.ToList();
-          
-            //var loginUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //ApplicationUser loginUser = await _userManager.FindByIdAsync(loginUserId);
-            //TempData["Department"] = loginUser.Department;
+            Users users = new Users();
+            users.Departments = new List<Department>();
+            users.AllUsers = new List<ApplicationUser>();
 
+            users.AllUsers = _userManager.Users.ToList();
+            users.Departments = _context.Department.ToList();
+        
             return View(users);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null || _userManager == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
+
+            return View(user);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, string[] values)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.LastName = values[0];
+            user.FirstName = values[1];
+            user.Email = values[2];
+            user.UserName = values[2];
+            user.Role = values[3];
+
+
+            if (user.LastName == null || user.FirstName == null || user.Email == null)
+            {
+                TempData["UserEditError"] = "姓、名、Emailは入力必須項目です。";
+                ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
+                return View(user);
+            }
+
+            if (values[6].Equals(values[7]) && HasUpperCase(values[6]) == true && HasLowerCase(values[6]) == true && values[6].Any(char.IsDigit) == true && values[6].Any(IsSpecialCharacter) == true)
+            {
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, values[6]);
+
+            }
+            else {
+                TempData["UserEditError"] = "パスワードの入力情報に誤りがあります。";
+                ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
+                return View(user);
+
+            }
+
+            var joinedDep = await _context.Department.FindAsync(user.DepartmentId);
+
+            if (joinedDep != null && int.Parse(values[4]) != joinedDep.DepartmentId)
+            {
+                user.DepartmentId = int.Parse(values[4]);
+            }
+
+            if (!(values[5].Equals(user.Role)))
+            {
+                await _userManager.AddToRoleAsync(user, user.Role);
+                await _userManager.RemoveFromRoleAsync(user, values[5]);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+
+                TempData["AlertUser"] = "ユーザーを編集しました。";
+                return RedirectToAction(nameof(Users));
+            }
+
+            TempData["UserEditError"] = "入力情報に誤りがあります。";
+            ViewData["Departments"] = new SelectList(_context.Department, "DepartmentId", "Name");
+            return View(user);
+        }
+
+
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<IActionResult> Details(string? id)
         {
@@ -100,5 +183,19 @@ namespace Mismo.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        private bool HasUpperCase(string str)
+        {
+            return str.Any(char.IsUpper);
+        }
+        private bool HasLowerCase(string str)
+        {
+            return str.Any(char.IsLower);
+        }
+        private bool IsSpecialCharacter(char c)
+        {
+            var specialCharacters = new[] { '!', '@', '#', '$', '%', '^', '&', '*', ',', ';', ':' };
+            return specialCharacters.Contains(c);
+        }
+
     }
 }
